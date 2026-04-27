@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Dashboard Admin</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🎓</div>
+      <div><div class="logo-text">CampusPro</div><div class="logo-sub">Administration</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a href="/admin/dashboard" class="nav-item active"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="nav-section-title">Gestion</div>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👨‍🎓</span> Étudiants</a>
+      <a href="/admin/professors" class="nav-item"><span class="nav-icon">👨‍🏫</span> Professeurs</a>
+      <a href="/admin/matieres" class="nav-item"><span class="nav-icon">📚</span> Matières</a>
+      <a href="/admin/classes" class="nav-item"><span class="nav-icon">🏫</span> Classes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">A</div>
+        <div><div class="user-name">Administrateur</div><div class="user-role">Accès complet</div></div>
+        <a href="/logout" style="margin-left:auto;color:var(--text-muted);text-decoration:none;font-size:18px;" title="Déconnexion">⏻</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="topbar">
+      <div><div class="topbar-title">📊 Dashboard</div><div class="topbar-subtitle">Vue d'ensemble du système</div></div>
+    </div>
+    <div class="page-content fade-in">
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon indigo">👨‍🎓</div>
+          <div><div class="stat-value" th:text="${stats.totalStudents}">0</div><div class="stat-label">Étudiants</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">👨‍🏫</div>
+          <div><div class="stat-value" th:text="${stats.totalProfessors}">0</div><div class="stat-label">Professeurs</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">📚</div>
+          <div><div class="stat-value" th:text="${stats.totalMatieres}">0</div><div class="stat-label">Matières</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🏫</div>
+          <div><div class="stat-value" th:text="${stats.totalClasses}">0</div><div class="stat-label">Classes</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div><div class="stat-value" th:text="${stats.admis}">0</div><div class="stat-label">Admis</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red">❌</div>
+          <div><div class="stat-value" th:text="${stats.recales}">0</div><div class="stat-label">Recalés</div></div>
+        </div>
+      </div>
+
+      <!-- Moyenne + Classes -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">Moyenne Générale Globale</div>
+          <div style="font-size:48px;font-weight:800;color:var(--accent);" th:text="${stats.moyenneGlobale} + ' / 20'">—</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">Sur l'ensemble des étudiants et matières</div>
+        </div>
+        <div class="card">
+          <div style="font-size:15px;font-weight:600;margin-bottom:16px;">Répartition par Classe</div>
+          <div th:each="entry : ${stats.parClasse}" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:14px;color:var(--text-secondary);" th:text="'Classe ' + ${entry.key}">C1</span>
+            <span class="badge badge-indigo" th:text="${entry.value} + ' étudiant(s)'">0</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

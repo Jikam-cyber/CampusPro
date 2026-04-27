@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Étudiants</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🎓</div>
+      <div><div class="logo-text">CampusPro</div><div class="logo-sub">Administration</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="nav-section-title">Gestion</div>
+      <a href="/admin/students" class="nav-item active"><span class="nav-icon">👨‍🎓</span> Étudiants</a>
+      <a href="/admin/professors" class="nav-item"><span class="nav-icon">👨‍🏫</span> Professeurs</a>
+      <a href="/admin/matieres" class="nav-item"><span class="nav-icon">📚</span> Matières</a>
+      <a href="/admin/classes" class="nav-item"><span class="nav-icon">🏫</span> Classes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">A</div>
+        <div><div class="user-name">Administrateur</div><div class="user-role">Accès complet</div></div>
+        <a href="/logout" style="margin-left:auto;color:var(--text-muted);text-decoration:none;font-size:18px;">⏻</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div><div class="topbar-title">👨‍🎓 Étudiants</div><div class="topbar-subtitle">Gestion des étudiants</div></div>
+      <button class="btn btn-primary" onclick="openModal('modal-add')">+ Ajouter</button>
+    </div>
+    <div class="page-content fade-in">
+      <div class="table-wrapper">
+        <div class="table-header">
+          <span class="table-title">Liste des étudiants (<span th:text="${#lists.size(students)}">0</span>)</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Nom Complet</th><th>Email</th><th>Classe</th><th>Moyenne</th><th>Mention</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="s : ${students}">
+              <td><span class="badge badge-indigo" th:text="${s.id}"></span></td>
+              <td style="font-weight:600;color:var(--text-primary);" th:text="${s.nomComplet}"></td>
+              <td th:text="${s.email}"></td>
+              <td><span class="badge badge-blue" th:text="${s.classeId}"></span></td>
+              <td>
+                <span th:classappend="${s.moyenneGenerale >= 10 ? 'note-good' : 'note-bad'}"
+                      th:text="${#numbers.formatDecimal(s.moyenneGenerale, 1, 2)} + ' / 20'"></span>
+              </td>
+              <td><span th:class="${'badge ' + (s.mentionClass == 'mention-tb' ? 'badge-green' : s.mentionClass == 'mention-b' ? 'badge-blue' : s.mentionClass == 'mention-i' ? 'badge-red' : 'badge-orange')}"
+                        th:text="${s.mention}"></span></td>
+              <td>
+                <a th:href="@{/admin/bulletin/{id}/pdf(id=${s.id})}" class="btn btn-sm btn-ghost" title="Télécharger bulletin PDF">📄 PDF</a>
+                <a th:href="@{/admin/students/delete/{id}(id=${s.id})}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Supprimer cet étudiant ?')">🗑</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Add -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-title">👨‍🎓 Ajouter un étudiant</div>
+    <form th:action="@{/admin/students/add}" method="post">
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input type="text" name="nom" class="form-control" required placeholder="Diallo"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prénom</label>
+        <input type="text" name="prenom" class="form-control" required placeholder="Amadou"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" placeholder="etudiant@campus.fr"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Classe</label>
+        <select name="classeId" class="form-control">
+          <option th:each="c : ${classes}" th:value="${c.id}" th:text="${c.nom}"></option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary" style="flex:1;">Ajouter</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add')" style="flex:1;">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+</script>
+</body>
+</html>

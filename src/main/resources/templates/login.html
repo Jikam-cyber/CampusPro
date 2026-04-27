@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Connexion</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+    body { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(79,70,229,0.06) 0%, transparent 50%);
+    }
+    .login-card {
+      position: relative; z-index: 1;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%; max-width: 440px;
+      animation: fadeIn 0.4s ease;
+    }
+    .login-logo { text-align: center; margin-bottom: 32px; }
+    .login-logo-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-radius: 16px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 12px;
+    }
+    .login-logo h1 { font-size: 26px; font-weight: 800; }
+    .login-logo p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+    .role-tabs { display: flex; gap: 6px; margin-bottom: 24px; background: var(--bg-primary); border-radius: 10px; padding: 4px; }
+    .role-tab {
+      flex: 1; padding: 9px; border-radius: 7px; border: none; background: transparent;
+      color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .role-tab.active { background: var(--accent); color: white; }
+    .role-tab:hover:not(.active) { background: var(--bg-hover); color: var(--text-primary); }
+    .login-btn {
+      width: 100%; padding: 13px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px;
+    }
+    .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .credentials-hint {
+      margin-top: 20px; padding: 12px 16px;
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 8px; font-size: 12px; color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .credentials-hint strong { color: var(--accent-light); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+<div class="login-bg"></div>
+<div class="login-card">
+  <div class="login-logo">
+    <div class="login-logo-icon">🎓</div>
+    <h1>CampusPro</h1>
+    <p>Système de gestion universitaire</p>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger">
+    <span>⚠️</span> <span th:text="${error}"></span>
+  </div>
+
+  <div class="role-tabs">
+    <button class="role-tab" id="tab-admin" onclick="setRole('admin')">👨‍💼 Admin</button>
+    <button class="role-tab" id="tab-professor" onclick="setRole('professor')">👨‍🏫 Professeur</button>
+    <button class="role-tab active" id="tab-student" onclick="setRole('student')">👨‍🎓 Étudiant</button>
+  </div>
+
+  <form th:action="@{/login}" method="post">
+    <input type="hidden" name="role" id="roleInput" value="student"/>
+    <div class="form-group">
+      <label class="form-label" id="usernameLabel">ID Étudiant</label>
+      <input type="text" name="username" id="usernameField" class="form-control"
+             placeholder="Ex: ETU001" required autocomplete="off"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
+    </div>
+    <button type="submit" class="login-btn">Se connecter →</button>
+  </form>
+
+  <div class="credentials-hint">
+    <strong>Démo rapide :</strong><br/>
+    Admin: <strong>admin</strong> / <strong>admin123</strong><br/>
+    Professeur: <strong>P001</strong> / <strong>prof123</strong><br/>
+    Étudiant: <strong>ETU001</strong> / <strong>etu123</strong>
+  </div>
+</div>
+<script>
+  function setRole(role) {
+    document.getElementById('roleInput').value = role;
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + role).classList.add('active');
+    const labels = { admin: 'Nom utilisateur', professor: 'Code Professeur (ex: P001)', student: 'ID Étudiant (ex: ETU001)' };
+    const placeholders = { admin: 'admin', professor: 'P001', student: 'ETU001' };
+    document.getElementById('usernameLabel').textContent = labels[role];
+    document.getElementById('usernameField').placeholder = 'Ex: ' + placeholders[role];
+  }
+  // Default tab active on load
+  document.addEventListener('DOMContentLoaded', () => setRole('student'));
+</script>
+</body>
+</html>

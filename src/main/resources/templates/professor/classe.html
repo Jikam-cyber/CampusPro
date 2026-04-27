@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Classe</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+    .note-input {
+      width: 70px; padding: 6px 8px; text-align: center;
+      background: var(--bg-primary); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-primary); font-size: 14px;
+    }
+    .note-input:focus { outline: none; border-color: var(--accent); }
+    .save-btn { padding: 6px 14px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 13px; }
+    .save-btn:hover { background: var(--accent-dark); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🎓</div><div><div class="logo-text">CampusPro</div><div class="logo-sub">Espace Professeur</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Navigation</div>
+      <a href="/professor/dashboard" class="nav-item"><span class="nav-icon">🏠</span> Tableau de bord</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" th:text="${professor?.prenom?.substring(0,1)}">P</div>
+        <div>
+          <div class="user-name" th:text="${professor?.nomComplet}">Professeur</div>
+          <div class="user-role" th:text="${professor?.id}">—</div>
+        </div>
+        <a href="/logout" style="margin-left:auto;color:var(--text-muted);text-decoration:none;font-size:18px;">⏻</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">🏫 <span th:text="${classe?.nom}">Classe</span></div>
+        <div class="topbar-subtitle" th:text="${classe?.niveau + ' — ' + classe?.salle}">—</div>
+      </div>
+      <span class="badge badge-indigo" th:text="${#lists.size(students)} + ' étudiants'"></span>
+    </div>
+
+    <div class="page-content fade-in">
+      <div class="table-wrapper">
+        <div class="table-header">
+          <span class="table-title">Saisie des Notes</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span th:each="m : ${matieres}" class="badge badge-indigo" th:text="${m.nom}"></span>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Étudiant</th>
+                <th>ID</th>
+                <th th:each="m : ${matieres}" th:text="${m.nom}"></th>
+                <th>Moyenne</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="s : ${students}">
+                <td style="font-weight:600;color:var(--text-primary);" th:text="${s.nomComplet}"></td>
+                <td><span class="badge badge-gray" th:text="${s.id}"></span></td>
+                <td th:each="m : ${matieres}">
+                  <form th:action="@{/professor/note/save}" method="post" style="display:inline;">
+                    <input type="hidden" name="studentId" th:value="${s.id}"/>
+                    <input type="hidden" name="matiereId" th:value="${m.id}"/>
+                    <input type="hidden" name="classeId" th:value="${classeId}"/>
+                    <input type="number" name="note" class="note-input"
+                           th:value="${s.notes[m.id] != null ? s.notes[m.id] : ''}"
+                           min="0" max="20" step="0.5" placeholder="—"/>
+                    <button type="submit" class="save-btn">✓</button>
+                  </form>
+                </td>
+                <td>
+                  <span th:classappend="${s.moyenneGenerale >= 10 ? 'note-good' : 'note-bad'}"
+                        th:text="${#numbers.formatDecimal(s.moyenneGenerale, 1, 2)} + ' / 20'"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:16px;color:var(--text-muted);font-size:13px;">
+        💡 Modifiez une note et cliquez sur ✓ pour enregistrer immédiatement.
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

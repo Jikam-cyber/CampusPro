@@ -1,0 +1,13 @@
+com\campuspro\CampusProApplication.class
+com\campuspro\controller\AuthController.class
+com\campuspro\service\DataService.class
+com\campuspro\controller\AdminController.class
+com\campuspro\controller\ProfessorController.class
+com\campuspro\service\PdfService.class
+com\campuspro\model\Classe.class
+com\campuspro\model\Professor.class
+com\campuspro\model\Student.class
+com\campuspro\controller\StudentController.class
+com\campuspro\data\DataStore.class
+com\campuspro\model\Matiere.class
+com\campuspro\SecurityConfig.class

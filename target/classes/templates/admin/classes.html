@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Classes</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🎓</div><div><div class="logo-text">CampusPro</div><div class="logo-sub">Administration</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a href="/admin/dashboard" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="nav-section-title">Gestion</div>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👨‍🎓</span> Étudiants</a>
+      <a href="/admin/professors" class="nav-item"><span class="nav-icon">👨‍🏫</span> Professeurs</a>
+      <a href="/admin/matieres" class="nav-item"><span class="nav-icon">📚</span> Matières</a>
+      <a href="/admin/classes" class="nav-item active"><span class="nav-icon">🏫</span> Classes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">A</div>
+        <div><div class="user-name">Administrateur</div><div class="user-role">Accès complet</div></div>
+        <a href="/logout" style="margin-left:auto;color:var(--text-muted);text-decoration:none;font-size:18px;">⏻</a>
+      </div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div><div class="topbar-title">🏫 Classes & Salles</div><div class="topbar-subtitle">Organisation des classes</div></div>
+    </div>
+    <div class="page-content fade-in">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+        <div th:each="c : ${classes}" class="card" style="cursor:default;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:rgba(99,102,241,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🏫</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--text-primary);" th:text="${c.nom}"></div>
+              <div style="font-size:12px;color:var(--text-muted);" th:text="${c.niveau}"></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:var(--bg-hover);border-radius:8px;padding:10px;">
+              <div style="font-size:11px;color:var(--text-muted);">Salle</div>
+              <div style="font-size:14px;font-weight:600;" th:text="${c.salle}"></div>
+            </div>
+            <div style="background:var(--bg-hover);border-radius:8px;padding:10px;">
+              <div style="font-size:11px;color:var(--text-muted);">Capacité</div>
+              <div style="font-size:14px;font-weight:600;" th:text="${c.capacite} + ' places'"></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <span class="badge badge-indigo" th:text="'ID: ' + ${c.id}"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

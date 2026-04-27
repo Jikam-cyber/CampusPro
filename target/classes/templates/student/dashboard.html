@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusPro — Mon Espace</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">🎓</div><div><div class="logo-text">CampusPro</div><div class="logo-sub">Espace Étudiant</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Mon Espace</div>
+      <a href="/student/dashboard" class="nav-item active"><span class="nav-icon">🏠</span> Accueil</a>
+      <a href="/student/bulletin" class="nav-item"><span class="nav-icon">📋</span> Mon Bulletin</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" th:text="${student != null ? student.prenom.substring(0,1) : 'E'}">E</div>
+        <div>
+          <div class="user-name" th:text="${student?.nomComplet}">Étudiant</div>
+          <div class="user-role" th:text="${student?.id}">—</div>
+        </div>
+        <a href="/logout" style="margin-left:auto;color:var(--text-muted);text-decoration:none;font-size:18px;">⏻</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">🏠 Bonjour, <span th:text="${student?.prenom}">Étudiant</span> !</div>
+        <div class="topbar-subtitle">Année universitaire 2024-2025</div>
+      </div>
+      <a href="/student/bulletin/pdf" class="btn btn-primary">📄 Télécharger Bulletin PDF</a>
+    </div>
+
+    <div class="page-content fade-in">
+      <!-- Quick stats -->
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card">
+          <div class="stat-icon indigo">📊</div>
+          <div>
+            <div class="stat-value" th:text="${bd.moyenne} + ' / 20'">—</div>
+            <div class="stat-label">Moyenne Générale</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🏆</div>
+          <div>
+            <div class="stat-value" th:text="${bd.mention}">—</div>
+            <div class="stat-label">Mention</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">📚</div>
+          <div>
+            <div class="stat-value" th:text="${#lists.size(matieres)}">5</div>
+            <div class="stat-label">Matières</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes table -->
+      <div class="table-wrapper">
+        <div class="table-header">
+          <span class="table-title">📝 Mes Notes</span>
+          <a href="/student/bulletin" class="btn btn-ghost btn-sm">Voir bulletin complet →</a>
+        </div>
+        <table>
+          <thead><tr><th>Matière</th><th>Code</th><th>Coeff.</th><th>Note / 20</th><th>Appréciation</th></tr></thead>
+          <tbody>
+            <tr th:each="ligne : ${bd.lignes}">
+              <td style="font-weight:600;color:var(--text-primary);" th:text="${ligne.matiere.nom}"></td>
+              <td><span class="badge badge-gray" th:text="${ligne.matiere.code}"></span></td>
+              <td th:text="${ligne.matiere.coefficient}"></td>
+              <td>
+                <span th:classappend="${(ligne.note as Double) >= 14 ? 'note-good' : (ligne.note as Double) >= 10 ? 'note-avg' : 'note-bad'}"
+                      th:text="${ligne.noteStr}"></span>
+              </td>
+              <td>
+                <span th:if="${(ligne.note as Double) >= 14}" class="badge badge-green">Excellent</span>
+                <span th:if="${(ligne.note as Double) >= 10 and (ligne.note as Double) < 14}" class="badge badge-blue">Bien</span>
+                <span th:if="${(ligne.note as Double) < 10}" class="badge badge-red">Insuffisant</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
