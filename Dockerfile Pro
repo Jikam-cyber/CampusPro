@@ -1,7 +1,15 @@
+# Étape 1 : build
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-# Click nbfs://nbhost/SystemFileSystem/Templates/Other/Dockerfile to edit this template
+# Étape 2 : run
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
 
-FROM alpine:latest
+COPY --from=build /app/target/*.jar app.jar
 
-CMD ["/bin/sh"]
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","app.jar"] 
